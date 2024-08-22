@@ -25,5 +25,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SamloaderKotlin"
+rootProject.name = "KMPFile"
 include(":library")
