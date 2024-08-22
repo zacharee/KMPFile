@@ -1,11 +1,13 @@
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.multiplatform")
+    id("com.vanniktech.maven.publish")
 }
 
-group = "dev.zwander.kotlin.file"
+group = "dev.zwander"
 
 kotlin.sourceSets.all {
     languageSettings.optIn("kotlin.RequiresOptIn")
@@ -25,6 +27,8 @@ kotlin {
                 }
             }
         }
+
+        publishLibraryVariants("release")
     }
 
     jvm {
@@ -100,15 +104,15 @@ kotlin {
         }
 
         val iosX64Main by getting {
-            dependsOn(appleMain)
+            dependsOn(iosMain)
         }
 
         val iosArm64Main by getting {
-            dependsOn(appleMain)
+            dependsOn(iosMain)
         }
 
         val iosSimulatorArm64Main by getting {
-            dependsOn(appleMain)
+            dependsOn(iosMain)
         }
 
         val macosMain by creating {
