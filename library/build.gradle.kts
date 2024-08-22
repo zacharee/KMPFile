@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.multiplatform")
-    id("com.vanniktech.maven.publish")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.maven.publish)
 }
 
 group = "dev.zwander"
@@ -66,9 +66,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.10")
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.5.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
+                implementation(libs.kotlin.stdlib)
+                implementation(libs.kotlinx.io.core)
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
 
@@ -89,8 +89,8 @@ kotlin {
             dependsOn(androidAndJvmMain)
 
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0-RC.2")
-                implementation("androidx.documentfile:documentfile:1.0.1")
+                implementation(libs.kotlinx.coroutines.android)
+                implementation(libs.documentfile)
             }
         }
 

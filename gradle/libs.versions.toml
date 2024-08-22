@@ -1,0 +1,19 @@
+[versions]
+android-gradle = "8.5.2"
+documentfile = "1.0.1"
+kotlin = "2.0.10"
+kotlinxCoroutinesCore = "1.9.0-RC.2"
+kotlinxIoCore = "0.5.3"
+mavenPublish = "0.29.0"
+
+[libraries]
+documentfile = { module = "androidx.documentfile:documentfile", version.ref = "documentfile" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinxIoCore" }
+
+[plugins]
+android-library = { id = "com.android.library", version.ref = "android-gradle" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }

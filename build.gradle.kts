@@ -1,7 +1,7 @@
 plugins {
-    id("com.android.library") version "8.5.2" apply false
-    id("org.jetbrains.kotlin.multiplatform") version "2.0.10" apply false
-    id("com.vanniktech.maven.publish") version "0.29.0" apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.maven.publish) apply false
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
