@@ -67,7 +67,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.10")
+                implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.10")
                 implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.5.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
             }

@@ -32,6 +32,7 @@ import platform.Foundation.NSURLVolumeAvailableCapacityForImportantUsageKey
 import platform.Foundation.NSURLVolumeAvailableCapacityKey
 import platform.Foundation.NSURLVolumeTotalCapacityKey
 import platform.Foundation.create
+import platform.Foundation.lastPathComponent
 import platform.Foundation.timeIntervalSince1970
 
 /**
@@ -61,7 +62,7 @@ actual open class PlatformFile : IPlatformFile {
     }
 
     actual override val nameWithoutExtension: String
-        get() = (nsUrl.lastPathComponent ?: "").substringBeforeLast(".")
+        get() = getName().substringBeforeLast(".")
 
     actual override fun getName(): String = nsUrl.lastPathComponent ?: ""
 
