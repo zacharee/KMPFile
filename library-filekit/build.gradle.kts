@@ -48,7 +48,7 @@ kotlin {
         macosArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "KMPFile"
+            baseName = "KMPFileFileKit"
             isStatic = true
         }
     }
@@ -67,8 +67,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                implementation(libs.kotlinx.io.core)
-                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.filekit.core)
+
+                implementation(project(":library"))
             }
         }
 
@@ -89,8 +90,8 @@ kotlin {
             dependsOn(androidAndJvmMain)
 
             dependencies {
-                implementation(libs.kotlinx.coroutines.android)
                 implementation(libs.documentfile)
+                implementation(libs.startup.runtime)
             }
         }
 
@@ -135,7 +136,7 @@ android {
         this.minSdk = 21
     }
 
-    namespace = "dev.zwander.kotlin.file"
+    namespace = "dev.zwander.kotlin.file.filekit"
 
     compileOptions {
         sourceCompatibility = javaVersionEnum
@@ -155,5 +156,5 @@ tasks.withType<Copy> {
 }
 
 mavenPublishing {
-    coordinates(artifactId = "kmpfile")
+    coordinates(artifactId = "kmpfile-filekit")
 }
