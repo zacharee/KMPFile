@@ -20,6 +20,8 @@ sourceSets {
     val commonMain by getting {
         dependencies {
             implementation("dev.zwander:kmpfile:VERSION")
+            // Convenience functions for converting from FileKit to KMPFile.
+            implementation("dev.zwander:kmpfile-filekit:VERSION")
         }
     }
 }
@@ -53,29 +55,16 @@ Note that on iOS and macOS, the system differentiates directories and files by t
 ### Picking Files
 KMPFile doesn't provide file picker functionality, but the [FileKit](https://github.com/vinceglb/FileKit/) can be used with KMPFile.
 
-Once you retrieve a FileKit `PlatformFile`, you can convert it to a KMPFile `PlatformFile` by getting its path:
+KMPFile provides an extension module `dev.zwander:kmpfile-filekit` that you can implement to provide extension functions to convert FileKit files to KMPFile files.
 
 ```kotlin
+val fileKitDirectory = FileKit.pickDirectory()
 val fileKitFile = FileKit.pickFile()
 
-if (fileKitFile != null) {
-    val kmpFile = dev.zwander.kotlin.file.PlatformFile(fileKitFile.path)
-    val source = kmpFile.inputStream()
-    //...
-}
+val kmpFileDirectory = fileKitDirectory.toKmpFile()
+val kmpFileFile = fileKitFile.toKmpFile()
 ```
 
-### Android Uri Handling
-In most cases on Android, you'll probably be using Uri instead of File. KMPFile provides the Android-specific `PlatformUriFile` for these cases. The constructor takes a Context object and a DocumentFile representing a Uri.
+On Android, `toKmpFile()` will return a `PlatformUriFile` instance, since FileKit's file on Android only handles Uris.
 
-To convert from FileKit (this needs to be done in the Android source set):
-
-```kotlin
-val fileKitFile = FileKit.pickFile()
-
-if (fileKitFile != null) {
-    val kmpFile = dev.zwander.kotlin.file.PlatformUriFile(context, DocumentFile.fromSingleUri(fileKitFile.uri)!!)
-    val source = kmpFile.inputStream()
-    //...
-}
-```
+`PlatformUriFile` implements `IPlatformFile` so this is largely invisible to usages in the common source set. You can create your own instances of `PlatformUriFile` from the Android source set.
