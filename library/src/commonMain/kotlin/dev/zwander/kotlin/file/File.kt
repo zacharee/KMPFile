@@ -61,7 +61,7 @@ expect open class PlatformFile : IPlatformFile {
     override fun openOutputStream(append: Boolean): Sink?
     override fun openInputStream(): Source?
 
-    override fun child(childName: String): IPlatformFile?
+    override fun child(childName: String, mimeType: String): IPlatformFile?
 
     override fun hashCode(): Int
     override fun equals(other: Any?): Boolean
@@ -132,7 +132,7 @@ interface IPlatformFile : Comparable<IPlatformFile> {
     fun openOutputStream(append: Boolean = false): Sink?
     fun openInputStream(): Source?
 
-    fun child(childName: String): IPlatformFile?
+    fun child(childName: String, mimeType: String = "*/*"): IPlatformFile?
 
     override fun hashCode(): Int
     override fun equals(other: Any?): Boolean

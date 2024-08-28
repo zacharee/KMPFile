@@ -143,6 +143,12 @@ class PlatformUriFile(
         return context.contentResolver.openInputStream(wrappedFile.uri)?.asSource()?.buffered()
     }
 
+    override fun child(childName: String, mimeType: String): IPlatformFile? {
+        return (wrappedFile.findFile(childName) ?: wrappedFile.createFile(mimeType, childName))?.let {
+            PlatformUriFile(context, it)
+        }
+    }
+
     override fun compareTo(other: IPlatformFile): Int {
         if (other !is PlatformUriFile) return -1
 
