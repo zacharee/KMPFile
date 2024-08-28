@@ -40,6 +40,7 @@ import platform.Foundation.timeIntervalSince1970
  * Platforms should actuate this class to implement
  * various filesystem classes they use.
  */
+@Suppress("unused")
 actual open class PlatformFile : IPlatformFile {
     actual companion object;
 
@@ -57,9 +58,8 @@ actual open class PlatformFile : IPlatformFile {
         nsUrl = NSURL.fileURLWithPath("${parent.getAbsolutePath()}${SystemPathSeparator}${child}")
     }
 
-    @Suppress("unused")
-    constructor(url: NSURL) {
-        this.nsUrl = url
+    actual constructor(realFile: RealFile) {
+        this.nsUrl = realFile
     }
 
     actual override val nameWithoutExtension: String

@@ -11,6 +11,7 @@ import java.io.FileOutputStream
 /**
  * A File implementation that wraps Java's File class.
  */
+@Suppress("unused")
 actual open class PlatformFile : IPlatformFile {
     actual companion object;
 
@@ -28,14 +29,12 @@ actual open class PlatformFile : IPlatformFile {
         wrappedFile = java.io.File(java.io.File(parent.getAbsolutePath()), child)
     }
 
-    @Suppress("unused")
     constructor(parent: java.io.File, child: String) {
         wrappedFile = java.io.File(parent, child)
     }
 
-    @Suppress("unused")
-    constructor(file: java.io.File) {
-        wrappedFile = file
+    actual constructor(realFile: RealFile) {
+        wrappedFile = realFile
     }
 
     actual override val nameWithoutExtension: String
