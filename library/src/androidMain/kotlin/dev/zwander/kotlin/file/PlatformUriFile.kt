@@ -27,119 +27,119 @@ class PlatformUriFile(
         get() = wrappedFile.name?.substringBeforeLast(".") ?: wrappedFile.uri.toString()
 
     override fun getName(): String = wrappedFile.name ?: wrappedFile.uri.toString()
-    override suspend fun getParent(): String? = wrappedFile.parentFile?.uri?.toString()
-    override suspend fun getParentFile(): IPlatformFile? = wrappedFile.parentFile?.let { PlatformUriFile(context, it) }
+    override fun getParent(): String? = wrappedFile.parentFile?.uri?.toString()
+    override fun getParentFile(): IPlatformFile? = wrappedFile.parentFile?.let { PlatformUriFile(context, it) }
     override fun getPath(): String = wrappedFile.uri.toString()
-    override suspend fun isAbsolute(): Boolean = false
+    override fun isAbsolute(): Boolean = false
     override fun getAbsolutePath(): String = getPath()
     override fun getAbsoluteFile(): IPlatformFile = this
-    override suspend fun getCanonicalPath(): String = throw IllegalAccessException("Not Supported")
-    override suspend fun getCanonicalFile(): IPlatformFile = throw IllegalAccessException("Not Supported")
-    override suspend fun getCanRead(): Boolean = wrappedFile.canRead()
-    override suspend fun getCanWrite(): Boolean = wrappedFile.canWrite()
-    override suspend fun getExists(): Boolean = wrappedFile.exists()
-    override suspend fun isDirectory(): Boolean = wrappedFile.isDirectory
-    override suspend fun isFile(): Boolean = wrappedFile.isFile
-    override suspend fun isHidden(): Boolean = false
-    override suspend fun getLastModified(): Long = wrappedFile.lastModified()
-    override suspend fun getLength(): Long = wrappedFile.length()
-    override suspend fun getTotalSpace(): Long = throw IllegalAccessException("Not Supported")
-    override suspend fun getFreeSpace(): Long = throw IllegalAccessException("Not Supported")
-    override suspend fun getUsableSpace(): Long = throw IllegalAccessException("Not Supported")
+    override fun getCanonicalPath(): String = throw IllegalAccessException("Not Supported")
+    override fun getCanonicalFile(): IPlatformFile = throw IllegalAccessException("Not Supported")
+    override fun getCanRead(): Boolean = wrappedFile.canRead()
+    override fun getCanWrite(): Boolean = wrappedFile.canWrite()
+    override fun getExists(): Boolean = wrappedFile.exists()
+    override fun isDirectory(): Boolean = wrappedFile.isDirectory
+    override fun isFile(): Boolean = wrappedFile.isFile
+    override fun isHidden(): Boolean = false
+    override fun getLastModified(): Long = wrappedFile.lastModified()
+    override fun getLength(): Long = wrappedFile.length()
+    override fun getTotalSpace(): Long = throw IllegalAccessException("Not Supported")
+    override fun getFreeSpace(): Long = throw IllegalAccessException("Not Supported")
+    override fun getUsableSpace(): Long = throw IllegalAccessException("Not Supported")
 
-    override suspend fun createNewFile(): Boolean {
+    override fun createNewFile(): Boolean {
         //DocumentFile creates itself.
         return true
     }
 
-    override suspend fun delete(): Boolean {
+    override fun delete(): Boolean {
         return wrappedFile.delete()
     }
 
-    override suspend fun deleteOnExit() {
+    override fun deleteOnExit() {
         throw IllegalAccessException("Not Supported")
     }
 
-    override suspend fun list(): Array<String> {
+    override fun list(): Array<String> {
         return wrappedFile.listFiles().map { it.name ?: it.uri.toString() }.toTypedArray()
     }
 
-    override suspend fun list(filter: (dir: IPlatformFile, name: String) -> Boolean): Array<String> {
+    override fun list(filter: (dir: IPlatformFile, name: String) -> Boolean): Array<String> {
         return wrappedFile.listFiles().filter {
             filter(PlatformUriFile(context, it.parentFile!!), it.name ?: it.uri.toString())
         }.map { it.name ?: it.uri.toString() }.toTypedArray()
     }
 
-    override suspend fun listFiles(): Array<IPlatformFile> {
+    override fun listFiles(): Array<IPlatformFile> {
         return wrappedFile.listFiles().map { PlatformUriFile(context, it) }
             .toTypedArray()
     }
 
-    override suspend fun listFiles(filter: (dir: IPlatformFile, name: String) -> Boolean): Array<IPlatformFile> {
+    override fun listFiles(filter: (dir: IPlatformFile, name: String) -> Boolean): Array<IPlatformFile> {
         return wrappedFile.listFiles().filter { filter(PlatformUriFile(context, it.parentFile!!), it.name ?: it.uri.toString()) }
             .map { PlatformUriFile(context, it) }
             .toTypedArray()
     }
 
-    override suspend fun listFiles(filter: (pathName: IPlatformFile) -> Boolean): Array<IPlatformFile> {
+    override fun listFiles(filter: (pathName: IPlatformFile) -> Boolean): Array<IPlatformFile> {
         return wrappedFile.listFiles().filter { filter(PlatformUriFile(context, it)) }
             .map { PlatformUriFile(context, it) }
             .toTypedArray()
     }
 
-    override suspend fun mkdir(): Boolean {
+    override fun mkdir(): Boolean {
         return true
     }
 
-    override suspend fun mkdirs(): Boolean {
+    override fun mkdirs(): Boolean {
         return true
     }
 
-    override suspend fun renameTo(dest: IPlatformFile): Boolean {
+    override fun renameTo(dest: IPlatformFile): Boolean {
         return wrappedFile.renameTo(dest.getName())
     }
 
-    override suspend fun setLastModified(time: Long): Boolean {
+    override fun setLastModified(time: Long): Boolean {
         throw IllegalAccessException("Not Supported")
     }
 
-    override suspend fun setReadOnly(): Boolean {
+    override fun setReadOnly(): Boolean {
         throw IllegalAccessException("Not Supported")
     }
 
-    override suspend fun setWritable(writable: Boolean, ownerOnly: Boolean): Boolean {
+    override fun setWritable(writable: Boolean, ownerOnly: Boolean): Boolean {
         throw IllegalAccessException("Not Supported")
     }
 
-    override suspend fun setWritable(writable: Boolean): Boolean {
+    override fun setWritable(writable: Boolean): Boolean {
         throw IllegalAccessException("Not Supported")
     }
 
-    override suspend fun setReadable(readable: Boolean, ownerOnly: Boolean): Boolean {
+    override fun setReadable(readable: Boolean, ownerOnly: Boolean): Boolean {
         throw IllegalAccessException("Not Supported")
     }
 
-    override suspend fun setReadable(readable: Boolean): Boolean {
+    override fun setReadable(readable: Boolean): Boolean {
         throw IllegalAccessException("Not Supported")
     }
 
-    override suspend fun setExecutable(executable: Boolean, ownerOnly: Boolean): Boolean {
+    override fun setExecutable(executable: Boolean, ownerOnly: Boolean): Boolean {
         throw IllegalAccessException("Not Supported")
     }
 
-    override suspend fun setExecutable(executable: Boolean): Boolean {
+    override fun setExecutable(executable: Boolean): Boolean {
         throw IllegalAccessException("Not Supported")
     }
 
-    override suspend fun canExecute(): Boolean {
+    override fun canExecute(): Boolean {
         throw IllegalAccessException("Not Supported")
     }
 
-    override suspend fun openOutputStream(append: Boolean): Sink? {
+    override fun openOutputStream(append: Boolean): Sink? {
         return context.contentResolver.openOutputStream(wrappedFile.uri, "w${if (append) "a" else ""}")?.asSink()?.buffered()
     }
 
-    override suspend fun openInputStream(): Source? {
+    override fun openInputStream(): Source? {
         return context.contentResolver.openInputStream(wrappedFile.uri)?.asSource()?.buffered()
     }
 

@@ -1,7 +1,5 @@
 package dev.zwander.kotlin.file
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.io.Sink
 import kotlinx.io.Source
 import kotlinx.io.asSink
@@ -44,132 +42,126 @@ actual open class PlatformFile : IPlatformFile {
         get() = wrappedFile.nameWithoutExtension
 
     actual override fun getName(): String = wrappedFile.name
-    actual override suspend fun getParent(): String? = wrappedFile.parent
-    actual override suspend fun getParentFile(): IPlatformFile? =
+    actual override fun getParent(): String? = wrappedFile.parent
+    actual override fun getParentFile(): IPlatformFile? =
         wrappedFile.parentFile?.absolutePath?.let { PlatformFile(it) }
 
     actual override fun getPath(): String = wrappedFile.path
-    actual override suspend fun isAbsolute(): Boolean = wrappedFile.isAbsolute
+    actual override fun isAbsolute(): Boolean = wrappedFile.isAbsolute
     actual override fun getAbsolutePath(): String = wrappedFile.absolutePath
     actual override fun getAbsoluteFile(): IPlatformFile =
         PlatformFile(wrappedFile.absoluteFile.absolutePath)
 
-    actual override suspend fun getCanonicalPath(): String = wrappedFile.canonicalPath
-    actual override suspend fun getCanonicalFile(): IPlatformFile =
+    actual override fun getCanonicalPath(): String = wrappedFile.canonicalPath
+    actual override fun getCanonicalFile(): IPlatformFile =
         PlatformFile(wrappedFile.canonicalFile.absolutePath)
 
-    actual override suspend fun getCanRead(): Boolean = wrappedFile.canRead()
-    actual override suspend fun getCanWrite(): Boolean = wrappedFile.canWrite()
-    actual override suspend fun getExists(): Boolean = wrappedFile.exists()
-    actual override suspend fun isDirectory(): Boolean = wrappedFile.isDirectory
-    actual override suspend fun isFile(): Boolean = wrappedFile.isFile
-    actual override suspend fun isHidden(): Boolean = wrappedFile.isHidden
-    actual override suspend fun getLastModified(): Long = wrappedFile.lastModified()
-    actual override suspend fun getLength(): Long = wrappedFile.length()
-    actual override suspend fun getTotalSpace(): Long = wrappedFile.totalSpace
-    actual override suspend fun getFreeSpace(): Long = wrappedFile.freeSpace
-    actual override suspend fun getUsableSpace(): Long = wrappedFile.usableSpace
+    actual override fun getCanRead(): Boolean = wrappedFile.canRead()
+    actual override fun getCanWrite(): Boolean = wrappedFile.canWrite()
+    actual override fun getExists(): Boolean = wrappedFile.exists()
+    actual override fun isDirectory(): Boolean = wrappedFile.isDirectory
+    actual override fun isFile(): Boolean = wrappedFile.isFile
+    actual override fun isHidden(): Boolean = wrappedFile.isHidden
+    actual override fun getLastModified(): Long = wrappedFile.lastModified()
+    actual override fun getLength(): Long = wrappedFile.length()
+    actual override fun getTotalSpace(): Long = wrappedFile.totalSpace
+    actual override fun getFreeSpace(): Long = wrappedFile.freeSpace
+    actual override fun getUsableSpace(): Long = wrappedFile.usableSpace
 
-    actual override suspend fun createNewFile(): Boolean {
-        return withContext(Dispatchers.IO) {
-            wrappedFile.createNewFile()
-        }
+    actual override fun createNewFile(): Boolean {
+        return wrappedFile.createNewFile()
     }
 
-    actual override suspend fun delete(): Boolean {
+    actual override fun delete(): Boolean {
         return wrappedFile.delete()
     }
 
-    actual override suspend fun deleteOnExit() {
+    actual override fun deleteOnExit() {
         wrappedFile.deleteOnExit()
     }
 
-    actual override suspend fun list(): Array<String>? {
+    actual override fun list(): Array<String>? {
         return wrappedFile.list()
     }
 
-    actual override suspend fun list(filter: (dir: IPlatformFile, name: String) -> Boolean): Array<String>? {
+    actual override fun list(filter: (dir: IPlatformFile, name: String) -> Boolean): Array<String>? {
         return wrappedFile.list { dir, name -> filter(PlatformFile(dir.absolutePath), name) }
     }
 
-    actual override suspend fun listFiles(): Array<IPlatformFile>? {
+    actual override fun listFiles(): Array<IPlatformFile>? {
         return wrappedFile.listFiles()?.map { PlatformFile(it.absolutePath) }
             ?.toTypedArray()
     }
 
-    actual override suspend fun listFiles(filter: (dir: IPlatformFile, name: String) -> Boolean): Array<IPlatformFile>? {
+    actual override fun listFiles(filter: (dir: IPlatformFile, name: String) -> Boolean): Array<IPlatformFile>? {
         return wrappedFile.listFiles { dir, name -> filter(PlatformFile(dir.absolutePath), name) }
             ?.map { PlatformFile(it.absolutePath) }
             ?.toTypedArray()
     }
 
-    actual override suspend fun listFiles(filter: (pathName: IPlatformFile) -> Boolean): Array<IPlatformFile>? {
+    actual override fun listFiles(filter: (pathName: IPlatformFile) -> Boolean): Array<IPlatformFile>? {
         return wrappedFile.listFiles { pathname -> filter(PlatformFile(pathname.absolutePath)) }
             ?.map { PlatformFile(it.absolutePath) }
             ?.toTypedArray()
     }
 
-    actual override suspend fun mkdir(): Boolean {
+    actual override fun mkdir(): Boolean {
         return wrappedFile.mkdir()
     }
 
-    actual override suspend fun mkdirs(): Boolean {
+    actual override fun mkdirs(): Boolean {
         return wrappedFile.mkdirs()
     }
 
-    actual override suspend fun renameTo(dest: IPlatformFile): Boolean {
+    actual override fun renameTo(dest: IPlatformFile): Boolean {
         return wrappedFile.renameTo(java.io.File(dest.getAbsolutePath()))
     }
 
-    actual override suspend fun setLastModified(time: Long): Boolean {
+    actual override fun setLastModified(time: Long): Boolean {
         return wrappedFile.setLastModified(time)
     }
 
-    actual override suspend fun setReadOnly(): Boolean {
+    actual override fun setReadOnly(): Boolean {
         return wrappedFile.setReadOnly()
     }
 
-    actual override suspend fun setWritable(writable: Boolean, ownerOnly: Boolean): Boolean {
+    actual override fun setWritable(writable: Boolean, ownerOnly: Boolean): Boolean {
         return wrappedFile.setWritable(writable, ownerOnly)
     }
 
-    actual override suspend fun setWritable(writable: Boolean): Boolean {
+    actual override fun setWritable(writable: Boolean): Boolean {
         return wrappedFile.setWritable(writable)
     }
 
-    actual override suspend fun setReadable(readable: Boolean, ownerOnly: Boolean): Boolean {
+    actual override fun setReadable(readable: Boolean, ownerOnly: Boolean): Boolean {
         return wrappedFile.setReadable(readable, ownerOnly)
     }
 
-    actual override suspend fun setReadable(readable: Boolean): Boolean {
+    actual override fun setReadable(readable: Boolean): Boolean {
         return wrappedFile.setReadable(readable)
     }
 
-    actual override suspend fun setExecutable(executable: Boolean, ownerOnly: Boolean): Boolean {
+    actual override fun setExecutable(executable: Boolean, ownerOnly: Boolean): Boolean {
         return wrappedFile.setExecutable(executable, ownerOnly)
     }
 
-    actual override suspend fun setExecutable(executable: Boolean): Boolean {
+    actual override fun setExecutable(executable: Boolean): Boolean {
         return wrappedFile.setExecutable(executable)
     }
 
-    actual override suspend fun canExecute(): Boolean {
+    actual override fun canExecute(): Boolean {
         return wrappedFile.canExecute()
     }
 
-    actual override suspend fun openOutputStream(append: Boolean): Sink? {
-        return withContext(Dispatchers.IO) {
-            FileOutputStream(wrappedFile, append).asSink().buffered()
-        }
+    actual override fun openOutputStream(append: Boolean): Sink? {
+        return FileOutputStream(wrappedFile, append).asSink().buffered()
     }
 
-    actual override suspend fun openInputStream(): Source? {
-        return withContext(Dispatchers.IO) {
-            FileInputStream(wrappedFile).asSource().buffered()
-        }
+    actual override fun openInputStream(): Source? {
+        return FileInputStream(wrappedFile).asSource().buffered()
     }
 
-    actual override suspend fun child(childName: String): IPlatformFile? {
+    actual override fun child(childName: String): IPlatformFile? {
         return if (isDirectory()) {
             PlatformFile(wrappedFile, childName)
         } else {
