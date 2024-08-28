@@ -169,6 +169,14 @@ actual open class PlatformFile : IPlatformFile {
         }
     }
 
+    actual override suspend fun child(childName: String): IPlatformFile? {
+        return if (isDirectory()) {
+            PlatformFile(wrappedFile, childName)
+        } else {
+            null
+        }
+    }
+
     actual override fun hashCode(): Int {
         return wrappedFile.hashCode()
     }

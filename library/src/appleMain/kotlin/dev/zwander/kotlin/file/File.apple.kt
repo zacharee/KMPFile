@@ -318,6 +318,8 @@ actual open class PlatformFile : IPlatformFile {
 
     actual override suspend fun openInputStream(): Source? = SystemFileSystem.source(Path(getAbsolutePath())).buffered()
 
+    actual override suspend fun child(childName: String): IPlatformFile? = PlatformFile(getAbsolutePath(), childName)
+
     actual override fun hashCode(): Int = nsUrl.hash().toInt()
 
     actual override fun equals(other: Any?): Boolean = other is PlatformFile && getAbsolutePath() == other.getAbsolutePath()

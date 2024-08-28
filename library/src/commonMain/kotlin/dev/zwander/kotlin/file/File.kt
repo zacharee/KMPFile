@@ -1,6 +1,5 @@
 package dev.zwander.kotlin.file
 
-import dev.zwander.kotlin.file.attribute.PosixFilePermissions
 import kotlinx.io.Sink
 import kotlinx.io.Source
 
@@ -61,6 +60,8 @@ expect open class PlatformFile : IPlatformFile {
 
     override suspend fun openOutputStream(append: Boolean): Sink?
     override suspend fun openInputStream(): Source?
+
+    override suspend fun child(childName: String): IPlatformFile?
 
     override fun hashCode(): Int
     override fun equals(other: Any?): Boolean
@@ -130,6 +131,8 @@ interface IPlatformFile : Comparable<IPlatformFile> {
 
     suspend fun openOutputStream(append: Boolean = false): Sink?
     suspend fun openInputStream(): Source?
+
+    suspend fun child(childName: String): IPlatformFile?
 
     override fun hashCode(): Int
     override fun equals(other: Any?): Boolean
