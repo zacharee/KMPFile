@@ -334,7 +334,10 @@ interface IPlatformFile : Comparable<IPlatformFile> {
     fun openInputStream(): Source?
 
     /**
-     * Retrieve a reference to a child file of this file.
+     * Retrieve a reference to a child of this file.
+     * @param childName the name of the child file.
+     * @param isDirectory whether the child is a directory.
+     * @param mimeType (only used with PlatformUriFile) the MIME type of the file, if it needs to be created.
      */
     fun child(childName: String, isDirectory: Boolean, mimeType: String = "*/*"): IPlatformFile?
 
