@@ -161,7 +161,7 @@ actual open class PlatformFile : IPlatformFile {
         return FileInputStream(wrappedFile).asSource().buffered()
     }
 
-    actual override fun child(childName: String, mimeType: String): IPlatformFile? {
+    actual override fun child(childName: String, isDirectory: Boolean, mimeType: String): IPlatformFile? {
         return if (isDirectory()) {
             PlatformFile(wrappedFile, childName)
         } else {

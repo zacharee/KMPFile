@@ -28,6 +28,7 @@ import platform.Foundation.NSString
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLAttributeModificationDateKey
 import platform.Foundation.NSURLFileSizeKey
+import platform.Foundation.NSURLIsHiddenKey
 import platform.Foundation.NSURLVolumeAvailableCapacityForImportantUsageKey
 import platform.Foundation.NSURLVolumeAvailableCapacityKey
 import platform.Foundation.NSURLVolumeTotalCapacityKey
@@ -92,15 +93,25 @@ actual open class PlatformFile : IPlatformFile {
 
     actual override fun isFile(): Boolean = !nsUrl.fileURL
 
-    actual override fun isHidden(): Boolean = false
-
     @OptIn(ExperimentalForeignApi::class)
-    actual override fun getLastModified(): Long = memScoped {
+    actual override fun isHidden(): Boolean = memScoped {
         nsUrl.path?.let {
             val errorPointer: CPointer<ObjCObjectVar<NSError?>> =
                 alloc<ObjCObjectVar<NSError?>>().ptr
+            (nsUrl.resourceValuesForKeys(
+                listOf(NSURLIsHiddenKey),
+                errorPointer,
+            )?.get(NSURLIsHiddenKey) as NSNumber?)?.boolValue
+        } ?: false
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    actual override fun getLastModified(): Long = memScoped {
+        (nsUrl.path?.let {
+            val errorPointer: CPointer<ObjCObjectVar<NSError?>> =
+                alloc<ObjCObjectVar<NSError?>>().ptr
             (NSFileManager.defaultManager.attributesOfItemAtPath(it, errorPointer)?.get(NSURLAttributeModificationDateKey) as NSDate?)?.timeIntervalSince1970?.toLong()
-        } ?: 0
+        } ?: 0) * 1000
     }
 
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
@@ -195,7 +206,7 @@ actual open class PlatformFile : IPlatformFile {
         val errorPointer: CPointer<ObjCObjectVar<NSError?>> =
             alloc<ObjCObjectVar<NSError?>>().ptr
         NSFileManager.defaultManager.setAttributes(
-            mapOf(NSFileModificationDate to NSDate.create(timeIntervalSince1970 = time.toDouble())),
+            mapOf(NSFileModificationDate to NSDate.create(timeIntervalSince1970 = (time / 1000).toDouble())),
             getAbsolutePath(),
             errorPointer,
         )
@@ -318,7 +329,7 @@ actual open class PlatformFile : IPlatformFile {
 
     actual override fun openInputStream(): Source? = SystemFileSystem.source(Path(getAbsolutePath())).buffered()
 
-    actual override fun child(childName: String, mimeType: String): IPlatformFile? = PlatformFile(getAbsolutePath(), childName)
+    actual override fun child(childName: String, isDirectory: Boolean, mimeType: String): IPlatformFile? = PlatformFile(getAbsolutePath(), if (isDirectory && !childName.endsWith("/")) "${childName}/" else childName)
 
     actual override fun hashCode(): Int = nsUrl.hash().toInt()
 

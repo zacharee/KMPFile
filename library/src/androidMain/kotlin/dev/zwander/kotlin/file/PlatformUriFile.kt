@@ -33,8 +33,8 @@ class PlatformUriFile(
     override fun isAbsolute(): Boolean = false
     override fun getAbsolutePath(): String = getPath()
     override fun getAbsoluteFile(): IPlatformFile = this
-    override fun getCanonicalPath(): String = throw IllegalAccessException("Not Supported")
-    override fun getCanonicalFile(): IPlatformFile = throw IllegalAccessException("Not Supported")
+    override fun getCanonicalPath(): String = throw IllegalStateException("Not Supported")
+    override fun getCanonicalFile(): IPlatformFile = throw IllegalStateException("Not Supported")
     override fun getCanRead(): Boolean = wrappedFile.canRead()
     override fun getCanWrite(): Boolean = wrappedFile.canWrite()
     override fun getExists(): Boolean = wrappedFile.exists()
@@ -43,9 +43,9 @@ class PlatformUriFile(
     override fun isHidden(): Boolean = false
     override fun getLastModified(): Long = wrappedFile.lastModified()
     override fun getLength(): Long = wrappedFile.length()
-    override fun getTotalSpace(): Long = throw IllegalAccessException("Not Supported")
-    override fun getFreeSpace(): Long = throw IllegalAccessException("Not Supported")
-    override fun getUsableSpace(): Long = throw IllegalAccessException("Not Supported")
+    override fun getTotalSpace(): Long = throw IllegalStateException("Not Supported")
+    override fun getFreeSpace(): Long = throw IllegalStateException("Not Supported")
+    override fun getUsableSpace(): Long = throw IllegalStateException("Not Supported")
 
     override fun createNewFile(): Boolean {
         //DocumentFile creates itself.
@@ -57,7 +57,7 @@ class PlatformUriFile(
     }
 
     override fun deleteOnExit() {
-        throw IllegalAccessException("Not Supported")
+        throw IllegalStateException("Not Supported")
     }
 
     override fun list(): Array<String> {
@@ -100,39 +100,39 @@ class PlatformUriFile(
     }
 
     override fun setLastModified(time: Long): Boolean {
-        throw IllegalAccessException("Not Supported")
+        throw IllegalStateException("Not Supported")
     }
 
     override fun setReadOnly(): Boolean {
-        throw IllegalAccessException("Not Supported")
+        throw IllegalStateException("Not Supported")
     }
 
     override fun setWritable(writable: Boolean, ownerOnly: Boolean): Boolean {
-        throw IllegalAccessException("Not Supported")
+        throw IllegalStateException("Not Supported")
     }
 
     override fun setWritable(writable: Boolean): Boolean {
-        throw IllegalAccessException("Not Supported")
+        throw IllegalStateException("Not Supported")
     }
 
     override fun setReadable(readable: Boolean, ownerOnly: Boolean): Boolean {
-        throw IllegalAccessException("Not Supported")
+        throw IllegalStateException("Not Supported")
     }
 
     override fun setReadable(readable: Boolean): Boolean {
-        throw IllegalAccessException("Not Supported")
+        throw IllegalStateException("Not Supported")
     }
 
     override fun setExecutable(executable: Boolean, ownerOnly: Boolean): Boolean {
-        throw IllegalAccessException("Not Supported")
+        throw IllegalStateException("Not Supported")
     }
 
     override fun setExecutable(executable: Boolean): Boolean {
-        throw IllegalAccessException("Not Supported")
+        throw IllegalStateException("Not Supported")
     }
 
     override fun canExecute(): Boolean {
-        throw IllegalAccessException("Not Supported")
+        throw IllegalStateException("Not Supported")
     }
 
     override fun openOutputStream(append: Boolean): Sink? {
@@ -143,9 +143,19 @@ class PlatformUriFile(
         return context.contentResolver.openInputStream(wrappedFile.uri)?.asSource()?.buffered()
     }
 
-    override fun child(childName: String, mimeType: String): IPlatformFile? {
-        return (wrappedFile.findFile(childName) ?: wrappedFile.createFile(mimeType, childName))?.let {
-            PlatformUriFile(context, it)
+    override fun child(childName: String, isDirectory: Boolean, mimeType: String): IPlatformFile? {
+        return if (isDirectory()) {
+            if (isDirectory) {
+                (wrappedFile.findFile(childName) ?: wrappedFile.createDirectory(childName))?.let {
+                    PlatformUriFile(context, it)
+                }
+            } else {
+                (wrappedFile.findFile(childName) ?: wrappedFile.createFile(mimeType, childName))?.let {
+                    PlatformUriFile(context, it)
+                }
+            }
+        } else {
+            null
         }
     }
 
