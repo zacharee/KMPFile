@@ -91,6 +91,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlinx.coroutines.android)
                 implementation(libs.documentfile)
+                implementation(libs.startup.runtime)
             }
         }
 

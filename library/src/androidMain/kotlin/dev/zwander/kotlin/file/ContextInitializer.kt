@@ -1,4 +1,4 @@
-package dev.zwander.kotlin.file.filekit
+package dev.zwander.kotlin.file
 
 import android.content.Context
 import androidx.annotation.Keep
@@ -8,7 +8,7 @@ import androidx.startup.Initializer
 @Keep
 class ContextInitializer : Initializer<Context> {
     companion object {
-        internal lateinit var appContext: Context
+        lateinit var appContext: Context
     }
 
     override fun create(context: Context): Context {

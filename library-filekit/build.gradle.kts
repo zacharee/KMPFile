@@ -91,7 +91,6 @@ kotlin {
 
             dependencies {
                 implementation(libs.documentfile)
-                implementation(libs.startup.runtime)
             }
         }
 

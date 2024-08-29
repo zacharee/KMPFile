@@ -6,7 +6,7 @@
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
-            <meta-data  android:name="dev.zwander.kotlin.file.filekit.ContextInitializer"
+            <meta-data  android:name="dev.zwander.kotlin.file.ContextInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>
