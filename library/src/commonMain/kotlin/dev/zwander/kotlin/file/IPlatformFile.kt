@@ -12,6 +12,7 @@ interface IPlatformFile : Comparable<IPlatformFile> {
      * Returns the name of the file without any extension.
      * e.g., if the file's full name is "filename.txt", this will return "filename".
      * e.g., if the file's full name is "filename.txt.old", this will return "filename.txt".
+     * @Android PlatformUriFile will return the entire Uri as a string if the name isn't available.
      */
     val nameWithoutExtension: String
 
