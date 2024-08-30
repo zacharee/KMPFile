@@ -46,6 +46,14 @@ kotlin {
         iosSimulatorArm64(),
         macosX64(),
         macosArm64(),
+        watchosArm32(),
+        watchosArm64(),
+        watchosDeviceArm64(),
+        watchosSimulatorArm64(),
+        watchosX64(),
+        tvosArm64(),
+        tvosSimulatorArm64(),
+        tvosX64(),
     ).forEach {
         it.binaries.framework {
             baseName = "KMPFile"
@@ -125,6 +133,46 @@ kotlin {
 
         val macosX64Main by getting {
             dependsOn(macosMain)
+        }
+
+        val watchosMain by creating {
+            dependsOn(appleMain)
+        }
+
+        val watchosArm32Main by getting {
+            dependsOn(watchosMain)
+        }
+
+        val watchosArm64Main by getting {
+            dependsOn(watchosMain)
+        }
+
+        val watchosDeviceArm64Main by getting {
+            dependsOn(watchosMain)
+        }
+
+        val watchosSimulatorArm64Main by getting {
+            dependsOn(watchosMain)
+        }
+
+        val watchosX64Main by getting {
+            dependsOn(watchosMain)
+        }
+
+        val tvosMain by creating {
+            dependsOn(appleMain)
+        }
+
+        val tvosArm64Main by getting {
+            dependsOn(tvosMain)
+        }
+
+        val tvosSimulatorArm64Main by getting {
+            dependsOn(tvosMain)
+        }
+
+        val tvosX64Main by getting {
+            dependsOn(tvosMain)
         }
     }
 }

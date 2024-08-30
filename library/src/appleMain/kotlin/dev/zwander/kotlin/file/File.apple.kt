@@ -40,7 +40,7 @@ import platform.Foundation.timeIntervalSince1970
  * Platforms should actuate this class to implement
  * various filesystem classes they use.
  */
-@Suppress("unused")
+@Suppress("unused", "OPT_IN_USAGE_FUTURE_ERROR")
 actual open class PlatformFile : IPlatformFile {
     actual companion object;
 
@@ -331,7 +331,7 @@ actual open class PlatformFile : IPlatformFile {
 
     actual override fun child(childName: String, isDirectory: Boolean, mimeType: String): IPlatformFile? = PlatformFile(getAbsolutePath(), if (isDirectory && !childName.endsWith("/")) "${childName}/" else childName)
 
-    actual override fun hashCode(): Int = nsUrl.hash().toInt()
+    actual override fun hashCode(): Int = nsUrl.hashCode()
 
     actual override fun equals(other: Any?): Boolean = other is PlatformFile && getAbsolutePath() == other.getAbsolutePath()
 
