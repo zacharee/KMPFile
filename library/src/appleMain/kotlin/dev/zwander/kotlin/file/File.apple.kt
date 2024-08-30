@@ -29,7 +29,7 @@ import platform.Foundation.NSURL
 import platform.Foundation.NSURLAttributeModificationDateKey
 import platform.Foundation.NSURLFileSizeKey
 import platform.Foundation.NSURLIsHiddenKey
-import platform.Foundation.NSURLVolumeAvailableCapacityForImportantUsageKey
+import platform.Foundation.NSURLVolumeAvailableCapacityForOpportunisticUsageKey
 import platform.Foundation.NSURLVolumeAvailableCapacityKey
 import platform.Foundation.NSURLVolumeTotalCapacityKey
 import platform.Foundation.create
@@ -146,7 +146,7 @@ actual open class PlatformFile : IPlatformFile {
         val valuePointer: CPointer<ObjCObjectVar<Any?>> = alloc<ObjCObjectVar<Any?>>().ptr
         val errorPointer: CPointer<ObjCObjectVar<NSError?>> =
             alloc<ObjCObjectVar<NSError?>>().ptr
-        nsUrl.getResourceValue(valuePointer, NSURLVolumeAvailableCapacityForImportantUsageKey, errorPointer)
+        nsUrl.getResourceValue(valuePointer, NSURLVolumeAvailableCapacityForOpportunisticUsageKey, errorPointer)
         return valuePointer.pointed.value as? Long ?: 0
     }
 
