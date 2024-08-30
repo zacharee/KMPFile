@@ -133,6 +133,7 @@ interface IPlatformFile : Comparable<IPlatformFile> {
 
     /**
      * @Android unsupported with [dev.zwander.kotlin.file.PlatformUriFile].
+     * @Apple equal to [getFreeSpace].
      * @return the total usable space on the file's filesystem.
      */
     fun getUsableSpace(): Long
