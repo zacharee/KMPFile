@@ -13,7 +13,9 @@ actual object FileUtils {
                 PlatformUriFile(ContextInitializer.appContext, uri, isDirectory)
             }
             uri.scheme == "file" -> {
-                PlatformFile(uri.path)
+                uri.path?.let {
+                    PlatformFile(it)
+                }
             }
             else -> {
                 PlatformFile(File(input))
