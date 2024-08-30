@@ -36,21 +36,37 @@ suspend fun someFileOperation(input: IPlatformFile, output: IPlatformFile) {
 }
 ```
 
-To create instances of `IPlatformFile`, use the constructors for `PlatformFile` on the respective platform.
-- Android and JVM take a `java.io.File` instance in the constructor.
-- iOS and macOS take an `NSURL` instance in the constructor.
+There are two classes that implement `IPlatformFile`: `PlatformFile` and `PlatformUriFile`.
 
-If you know the absolute path of the file you want to reference, you can also construct a `PlatformFile` instance directly in your common code:
+### PlatformFile
+This class is available on all platforms and is meant to deal with files directly.
+
+On Android and the JVM, `PlatformFile` wraps Java's `File`. On Apple platforms, it wraps `NSURL`.
+
+`PlatformFile` contains multiple constructors to create instances directly from common code. You can create a `PlatformFile` from a file path, from a parent path and child file name, from a parent file and child file name, and even wrap a Java File or Apple NSURL directly from your common source.
+
+### PlatformUriFile
+This class is only available on Android, but implements `IPlatformFile` so it can be used in the same way as `PlatformFile`.
+
+`PlatformUriFile` is made for doing Uri-based file management on Android. You can't directly create an instance from common code, but there are convenience functions for doing so.
+
+### Convenience Functions
+If you have a string that could represent either a file path or Uri, you can use `FileUtils.fromString()` to create the appropriate `IPlatformFile` instance for it.
+
 ```kotlin
-// Create a file from a path string.
-val file = PlatformFile(absolutePathString)
+// This will create a PlatformUriFile instance on Android.
+val uriFile = FileUtils.fromString(input = "content://media/some_file_id", isDirectory = false)
 
-// Create a directory and child file.
-val directory = PlatformFile(pathToDirectory)
-val childFile = PlatformFile(directory, "someChild.txt")
+// This will create a PlatformFile instance on all platforms.
+val realFile = FileUtils.fromString(input = "/path/to/some_file.txt", isDirectory = false)
 ```
 
-Note that on iOS and macOS, the system differentiates directories and files by the presence of a trailing slash in the path. KMPFile doesn't currently handle this automatically, so when creating a `PlatformFile` in common code that represents a directory, make sure you have that trailing slash.
+Specifying whether the referenced path is a directory is necessary for consistent behavior with Android Uris and on Apple platforms.
+
+### Platform Differences
+File management on one platform isn't perfectly analogous to management on another, so not every function of `IPlatformFile` may be available or identical in behavior.
+
+For details on the differences between platforms and which functions aren't supported on which platform, check out the comments on `IPlatformFile`.
 
 ### Picking Files
 KMPFile doesn't provide file picker functionality, but the [FileKit](https://github.com/vinceglb/FileKit/) can be used with KMPFile.
