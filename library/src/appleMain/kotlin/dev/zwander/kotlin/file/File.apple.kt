@@ -40,7 +40,7 @@ import platform.Foundation.timeIntervalSince1970
  * Platforms should actuate this class to implement
  * various filesystem classes they use.
  */
-@Suppress("unused", "OPT_IN_USAGE_FUTURE_ERROR")
+@Suppress("unused")
 actual open class PlatformFile : IPlatformFile {
     actual companion object;
 
@@ -216,8 +216,9 @@ actual open class PlatformFile : IPlatformFile {
     actual override fun setReadOnly(): Boolean = memScoped {
         val errorPointer: CPointer<ObjCObjectVar<NSError?>> =
             alloc<ObjCObjectVar<NSError?>>().ptr
+        @Suppress("CAST_NEVER_SUCCEEDS")
         NSFileManager.defaultManager.setAttributes(
-            mapOf(NSFileImmutable to NSNumber(1)),
+            mapOf(NSFileImmutable to 1 as NSNumber),
             getAbsolutePath(),
             errorPointer,
         )
@@ -245,10 +246,11 @@ actual open class PlatformFile : IPlatformFile {
 
         val errorPointer: CPointer<ObjCObjectVar<NSError?>> =
             alloc<ObjCObjectVar<NSError?>>().ptr
+        @Suppress("CAST_NEVER_SUCCEEDS")
         NSFileManager.defaultManager.setAttributes(
             mapOf(
-                NSFileImmutable to NSNumber(if (writable) 0 else 1),
-                NSFilePosixPermissions to NSNumber(PosixFilePermissions.toOctalFileMode(currentPermissions)),
+                NSFileImmutable to (if (writable) 0 else 1) as NSNumber,
+                NSFilePosixPermissions to PosixFilePermissions.toOctalFileMode(currentPermissions) as NSNumber,
             ),
             getAbsolutePath(),
             errorPointer,
@@ -279,9 +281,10 @@ actual open class PlatformFile : IPlatformFile {
 
         val errorPointer: CPointer<ObjCObjectVar<NSError?>> =
             alloc<ObjCObjectVar<NSError?>>().ptr
+        @Suppress("CAST_NEVER_SUCCEEDS")
         NSFileManager.defaultManager.setAttributes(
             mapOf(
-                NSFilePosixPermissions to NSNumber(PosixFilePermissions.toOctalFileMode(currentPermissions)),
+                NSFilePosixPermissions to PosixFilePermissions.toOctalFileMode(currentPermissions) as NSNumber,
             ),
             getAbsolutePath(),
             errorPointer,
@@ -312,9 +315,10 @@ actual open class PlatformFile : IPlatformFile {
 
         val errorPointer: CPointer<ObjCObjectVar<NSError?>> =
             alloc<ObjCObjectVar<NSError?>>().ptr
+        @Suppress("CAST_NEVER_SUCCEEDS")
         NSFileManager.defaultManager.setAttributes(
             mapOf(
-                NSFilePosixPermissions to NSNumber(PosixFilePermissions.toOctalFileMode(currentPermissions)),
+                NSFilePosixPermissions to PosixFilePermissions.toOctalFileMode(currentPermissions) as NSNumber,
             ),
             getAbsolutePath(),
             errorPointer,
