@@ -8,6 +8,9 @@ KMPFile targets the following platforms:
 - Android (File, Uri)
 - JVM
 - Apple (iOS, macOS, tvOS, watchOS) (largely untested)
+- Linux (arm64, x64) (largely untested)
+- Android NDK (arm32, arm64, x86, x64) (largely untested)
+- Windows (MinGW x64) (largely untested)
 
 ## Installation
 ![Maven Central Version](https://img.shields.io/maven-central/v/dev.zwander/kmpfile)

@@ -61,6 +61,16 @@ kotlin {
         }
     }
 
+    androidNativeArm32()
+    androidNativeArm64()
+    androidNativeX86()
+    androidNativeX64()
+
+    mingwX64()
+
+    linuxArm64()
+    linuxX64()
+
     targets.all {
         compilations.all {
             compileTaskProvider.configure {
@@ -80,7 +90,7 @@ kotlin {
             }
         }
 
-        val skiaMain by creating {
+        val posixMain by creating {
             dependsOn(commonMain)
         }
 
@@ -89,7 +99,6 @@ kotlin {
         }
 
         val jvmMain by getting {
-            dependsOn(skiaMain)
             dependsOn(androidAndJvmMain)
         }
 
@@ -104,7 +113,7 @@ kotlin {
         }
 
         val appleMain by creating {
-            dependsOn(skiaMain)
+            dependsOn(commonMain)
         }
 
         val iosMain by creating {
@@ -173,6 +182,46 @@ kotlin {
 
         val tvosX64Main by getting {
             dependsOn(tvosMain)
+        }
+
+        val androidNativeMain by creating {
+            dependsOn(posixMain)
+        }
+
+        val androidNativeArm32Main by getting {
+            dependsOn(androidNativeMain)
+        }
+
+        val androidNativeArm64Main by getting {
+            dependsOn(androidNativeMain)
+        }
+
+        val androidNativeX86Main by getting {
+            dependsOn(androidNativeMain)
+        }
+
+        val androidNativeX64Main by getting {
+            dependsOn(androidNativeMain)
+        }
+
+        val mingwMain by creating {
+            dependsOn(commonMain)
+        }
+
+        val mingwX64Main by getting {
+            dependsOn(mingwMain)
+        }
+
+        val linuxMain by creating {
+            dependsOn(posixMain)
+        }
+
+        val linuxArm64Main by getting {
+            dependsOn(linuxMain)
+        }
+
+        val linuxX64Main by getting {
+            dependsOn(linuxMain)
         }
     }
 }

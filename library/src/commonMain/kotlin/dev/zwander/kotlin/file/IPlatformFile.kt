@@ -104,6 +104,8 @@ interface IPlatformFile : Comparable<IPlatformFile> {
 
     /**
      * @Android unsupported with [dev.zwander.kotlin.file.PlatformUriFile].
+     * @POSIX currently only checks to see if the file name begins with ".".
+     * @MinGW returns true also if the file is a system file.
      * @return whether this file is hidden.
      */
     fun isHidden(): Boolean
@@ -121,12 +123,16 @@ interface IPlatformFile : Comparable<IPlatformFile> {
 
     /**
      * @Android unsupported with [dev.zwander.kotlin.file.PlatformUriFile].
+     * @POSIX unsupported.
+     * @MinGW unsupported.
      * @return the total space available on the file's filesystem.
      */
     fun getTotalSpace(): Long
 
     /**
      * @Android unsupported with [dev.zwander.kotlin.file.PlatformUriFile].
+     * @POSIX unsupported.
+     * @MinGW unsupported.
      * @return the total free space on the file's filesystem.
      */
     fun getFreeSpace(): Long
@@ -134,6 +140,8 @@ interface IPlatformFile : Comparable<IPlatformFile> {
     /**
      * @Android unsupported with [dev.zwander.kotlin.file.PlatformUriFile].
      * @Apple equal to [getFreeSpace].
+     * @POSIX unsupported.
+     * @MinGW unsupported.
      * @return the total usable space on the file's filesystem.
      */
     fun getUsableSpace(): Long
@@ -153,6 +161,8 @@ interface IPlatformFile : Comparable<IPlatformFile> {
 
     /**
      * @Apple unsupported.
+     * @POSIX unsupported.
+     * @MinGW unsupported.
      * @Android unsupported with [dev.zwander.kotlin.file.PlatformUriFile].
      * Delete the file or directory at the path specified by this instance
      * when the app quits.
