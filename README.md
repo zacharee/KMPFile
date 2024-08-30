@@ -7,8 +7,7 @@ KMPFile wraps [kotlinx.io](https://github.com/Kotlin/kotlinx-io) for some operat
 KMPFile targets the following platforms:
 - Android (File, Uri)
 - JVM
-- iOS (largely untested)
-- macOS native (largely untested)
+- Apple (iOS, macOS, tvOS, watchOS) (largely untested)
 
 ## Installation
 ![Maven Central Version](https://img.shields.io/maven-central/v/dev.zwander/kmpfile)
