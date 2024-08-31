@@ -23,6 +23,7 @@ sourceSets {
         dependencies {
             implementation("dev.zwander:kmpfile:VERSION")
             // Convenience functions for converting from FileKit to KMPFile.
+            // Supports the same platforms as FileKit, minus JS and WASM.
             implementation("dev.zwander:kmpfile-filekit:VERSION")
         }
     }
