@@ -190,7 +190,10 @@ actual open class PlatformFile : IPlatformFile {
 
     @OptIn(UnsafeNumber::class)
     actual override fun setLastModified(time: Long): Boolean {
-        val times = cValue<timeval> { this.tv_sec = (time / 1000).toInt() as time_t }
+        val times = cValue<timeval> {
+            @Suppress("USELESS_CAST")
+            this.tv_sec = (time / 1000).toInt() as time_t
+        }
         return utimes(wrappedPath.toString(), times) == 0
     }
 
