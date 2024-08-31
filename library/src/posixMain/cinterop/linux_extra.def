@@ -1,0 +1,13 @@
+## https://github.com/Fuyukai/Tinlok/blob/master/tinlok-core/src/linuxMain/cinterop/linux_extra.def
+## Includes extra headers for the Linux platform.
+package = platform.linux.extra
+#noStringConversion = open opendir access mkdir rmdir unlink realpath readlink rename symlink stat lstat statx strlen strnlen
+---
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>           /* Definition of AT_* constants */
+
+extern struct statx;
+
+extern int statx(int dirfd, const char *pathname, int flags, unsigned int mask, struct statx *statxbuf);
