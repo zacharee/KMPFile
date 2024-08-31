@@ -2,7 +2,7 @@
 android-gradle = "8.5.2"
 documentfile = "1.0.1"
 filekit = "0.8.1"
-kotlin = "2.0.10"
+kotlin = "2.0.20"
 kotlinxCoroutinesCore = "1.9.0-RC.2"
 kotlinxIoCore = "0.5.3"
 mavenPublish = "0.29.0"
