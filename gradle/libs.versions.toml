@@ -6,6 +6,7 @@ kotlin = "2.0.10"
 kotlinxCoroutinesCore = "1.9.0-RC.2"
 kotlinxIoCore = "0.5.3"
 mavenPublish = "0.29.0"
+okio = "3.9.0"
 startupRuntime = "1.1.1"
 
 [libraries]
@@ -15,6 +16,7 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinxIoCore" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startupRuntime" }
 
 [plugins]

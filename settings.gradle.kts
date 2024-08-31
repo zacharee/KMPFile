@@ -26,4 +26,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "KMPFile"
-include(":library", ":library-filekit")
+include(":library", ":library-filekit", ":library-okio")

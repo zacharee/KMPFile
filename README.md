@@ -25,6 +25,10 @@ sourceSets {
             // Convenience functions for converting from FileKit to KMPFile.
             // Supports the same platforms as FileKit, minus JS and WASM.
             implementation("dev.zwander:kmpfile-filekit:VERSION")
+            // Convenience functions for converting between kotlinx.io and okio
+            // Sources and Sinks.
+            // Supports the same platforms as okio, minus JS and WASM.
+            implementation("dev.zwander:kmpfile-okio:VERSION")
         }
     }
 }
@@ -87,3 +91,20 @@ val kmpFileFile = fileKitFile.toKmpFile()
 On Android, `toKmpFile()` will return a `PlatformUriFile` instance, since FileKit's file on Android only handles Uris.
 
 `PlatformUriFile` implements `IPlatformFile` so this is largely invisible to usages in the common source set. You can create your own instances of `PlatformUriFile` from the Android source set.
+
+### Okio Compatibility
+KMPFile uses kotlinx.io internally for many functions, including data streaming. If your project uses Okio, you can add `kmpfile-okio` to convert between the two libraries.
+
+```kotlin
+val file: IPlatformFile = PlatformFile("/some/path.txt")
+    
+// Convert kotlinx.io streams to okio streams.
+val okioSource: okio.Source? = file.openInputStream()?.toOkioSource()
+val okioSink: okio.Sink? = file.openOutputStream()?.toOkioSink()
+
+// Convert okio streams to kotlinx.io streams.
+val kotlinSource: kotlinx.io.RawSource? = okioSource?.toKotlinSource()
+val kotlinSink: kotlinx.io.RawSink? = okioSink?.toKotlinSink()
+```
+
+These haven't been tested for performance and may cause issues with transfer speeds. Unfortunately neither library is very extensible, so KMPFile needs to use intermediate buffers with each operation.
