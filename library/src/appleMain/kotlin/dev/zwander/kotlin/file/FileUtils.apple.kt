@@ -14,12 +14,6 @@ actual object FileUtils {
             input
         }
 
-        val validUrl = NSURL.URLWithString(realPath, false)
-
-        return if (validUrl?.fileURL == true) {
-            PlatformFile(NSURL.fileURLWithPath(realPath, isDirectory))
-        } else {
-            null
-        }
+        return PlatformFile(NSURL.fileURLWithPath(realPath, isDirectory))
     }
 }
