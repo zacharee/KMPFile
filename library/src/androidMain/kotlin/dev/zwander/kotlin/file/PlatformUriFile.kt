@@ -173,4 +173,6 @@ class PlatformUriFile(
     override fun hashCode(): Int {
         return wrappedFile.uri.hashCode()
     }
+
+    override fun toString(): String = stringify()
 }

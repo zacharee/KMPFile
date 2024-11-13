@@ -327,4 +327,11 @@ interface IPlatformFile : Comparable<IPlatformFile> {
     override fun hashCode(): Int
     override fun equals(other: Any?): Boolean
     override fun compareTo(other: IPlatformFile): Int
+
+    /**
+     * Identical to [getPath].
+     */
+    override fun toString(): String
 }
+
+internal fun IPlatformFile.stringify(): String = getPath()

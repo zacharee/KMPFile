@@ -339,4 +339,6 @@ actual open class PlatformFile : IPlatformFile {
     actual override fun equals(other: Any?): Boolean = other is PlatformFile && other.wrappedPath == wrappedPath
 
     actual override fun compareTo(other: IPlatformFile): Int = getName().compareTo(other.getName())
+
+    actual override fun toString(): String = stringify()
 }

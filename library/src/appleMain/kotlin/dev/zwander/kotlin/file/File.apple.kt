@@ -32,7 +32,6 @@ import platform.Foundation.NSURLIsHiddenKey
 import platform.Foundation.NSURLVolumeAvailableCapacityKey
 import platform.Foundation.NSURLVolumeTotalCapacityKey
 import platform.Foundation.create
-import platform.Foundation.lastPathComponent
 import platform.Foundation.timeIntervalSince1970
 
 /**
@@ -332,6 +331,8 @@ actual open class PlatformFile : IPlatformFile {
     actual override fun equals(other: Any?): Boolean = other is PlatformFile && getAbsolutePath() == other.getAbsolutePath()
 
     actual override fun compareTo(other: IPlatformFile): Int = getAbsolutePath().compareTo(other.getAbsolutePath())
+
+    actual override fun toString(): String = stringify()
 
     @OptIn(ExperimentalForeignApi::class)
     private fun getPosixPermissions(): Set<PosixFilePermission> = memScoped {

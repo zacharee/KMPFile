@@ -179,4 +179,6 @@ actual open class PlatformFile : IPlatformFile {
     actual override fun equals(other: Any?): Boolean {
         return other is PlatformFile && wrappedFile.absolutePath == other.getAbsolutePath()
     }
+
+    actual override fun toString(): String = stringify()
 }

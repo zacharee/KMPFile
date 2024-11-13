@@ -89,4 +89,5 @@ expect open class PlatformFile : IPlatformFile {
     override fun hashCode(): Int
     override fun equals(other: Any?): Boolean
     override fun compareTo(other: IPlatformFile): Int
+    override fun toString(): String
 }
