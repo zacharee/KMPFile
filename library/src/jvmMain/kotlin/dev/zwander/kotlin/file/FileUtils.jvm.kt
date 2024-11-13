@@ -11,10 +11,16 @@ actual object FileUtils {
         return try {
             val uri = URI(input)
 
-            if (uri.scheme == "file") {
-                PlatformFile(uri.toPath().toFile())
-            } else {
-                null
+            when (uri.scheme) {
+                "file" -> {
+                    PlatformFile(uri.toPath().toFile())
+                }
+                null -> {
+                    PlatformFile(File(input))
+                }
+                else -> {
+                    null
+                }
             }
         } catch (e: URISyntaxException) {
             PlatformFile(File(input))
