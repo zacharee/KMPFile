@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="library-okio-jvm">
-    <output-path>$PROJECT_DIR$/library-okio/build/libs</output-path>
-    <root id="archive" name="library-okio-jvm.jar">
-      <element id="module-output" name="KMPFile.library-okio.jvmMain" />
-    </root>
-  </artifact>
-</component>
