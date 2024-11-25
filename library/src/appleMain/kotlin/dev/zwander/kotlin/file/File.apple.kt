@@ -13,9 +13,10 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import kotlinx.io.Sink
 import kotlinx.io.Source
+import kotlinx.io.asSink
+import kotlinx.io.asSource
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
-import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.files.SystemPathSeparator
 import platform.Foundation.NSDate
 import platform.Foundation.NSError
@@ -23,7 +24,9 @@ import platform.Foundation.NSFileImmutable
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSFileModificationDate
 import platform.Foundation.NSFilePosixPermissions
+import platform.Foundation.NSInputStream
 import platform.Foundation.NSNumber
+import platform.Foundation.NSOutputStream
 import platform.Foundation.NSString
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLAttributeModificationDateKey
@@ -320,9 +323,9 @@ actual open class PlatformFile : IPlatformFile {
 
     actual override fun canExecute(): Boolean = NSFileManager.defaultManager.isExecutableFileAtPath(getAbsolutePath())
 
-    actual override fun openOutputStream(append: Boolean): Sink? = SystemFileSystem.sink(Path(getAbsolutePath()), append).buffered()
+    actual override fun openOutputStream(append: Boolean): Sink? = NSOutputStream(nsUrl, append).asSink().buffered()
 
-    actual override fun openInputStream(): Source? = SystemFileSystem.source(Path(getAbsolutePath())).buffered()
+    actual override fun openInputStream(): Source? = NSInputStream(nsUrl).asSource().buffered()
 
     actual override fun child(childName: String, isDirectory: Boolean, mimeType: String): IPlatformFile? = PlatformFile(getAbsolutePath(), if (isDirectory && !childName.endsWith("/")) "${childName}/" else childName)
 
