@@ -7,6 +7,8 @@ import kotlinx.io.asSource
 import kotlinx.io.buffered
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.OutputStream
+import java.io.RandomAccessFile
 
 /**
  * A File implementation that wraps Java's File class.
@@ -152,7 +154,24 @@ actual open class PlatformFile : IPlatformFile {
         return wrappedFile.canExecute()
     }
 
-    actual override fun openOutputStream(append: Boolean): Sink? {
+    actual override fun openOutputStream(append: Boolean, truncate: Boolean): Sink? {
+        enforceWriteMode(append, truncate)
+
+        if (!truncate && !append) {
+            val raf = RandomAccessFile(wrappedFile, "w")
+            raf.seek(0L)
+
+            return (object : OutputStream() {
+                override fun write(data: Int) {
+                    raf.write(data)
+                }
+
+                override fun close() {
+                    raf.close()
+                }
+            }).asSink().buffered()
+        }
+
         return FileOutputStream(wrappedFile, append).asSink().buffered()
     }
 

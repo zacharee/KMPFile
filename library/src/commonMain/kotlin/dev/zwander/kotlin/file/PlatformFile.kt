@@ -81,7 +81,7 @@ expect open class PlatformFile : IPlatformFile {
     override fun setExecutable(executable: Boolean): Boolean
     override fun canExecute(): Boolean
 
-    override fun openOutputStream(append: Boolean): Sink?
+    override fun openOutputStream(append: Boolean, truncate: Boolean): Sink?
     override fun openInputStream(): Source?
 
     override fun child(childName: String, isDirectory: Boolean, mimeType: String): IPlatformFile?

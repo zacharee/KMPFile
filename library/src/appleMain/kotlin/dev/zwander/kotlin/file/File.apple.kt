@@ -6,20 +6,31 @@ import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.ObjCObjectVar
+import kotlinx.cinterop.UnsafeNumber
+import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.alloc
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.ptr
+import kotlinx.cinterop.usePinned
 import kotlinx.cinterop.value
+import kotlinx.io.Buffer
+import kotlinx.io.IOException
+import kotlinx.io.RawSink
 import kotlinx.io.Sink
 import kotlinx.io.Source
+import kotlinx.io.UnsafeIoApi
 import kotlinx.io.asSink
 import kotlinx.io.asSource
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemPathSeparator
+import kotlinx.io.unsafe.UnsafeBufferOperations
+import platform.Foundation.NSData
 import platform.Foundation.NSDate
 import platform.Foundation.NSError
+import platform.Foundation.NSFileHandle
 import platform.Foundation.NSFileImmutable
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSFileModificationDate
@@ -34,7 +45,10 @@ import platform.Foundation.NSURLFileSizeKey
 import platform.Foundation.NSURLIsHiddenKey
 import platform.Foundation.NSURLVolumeAvailableCapacityKey
 import platform.Foundation.NSURLVolumeTotalCapacityKey
+import platform.Foundation.closeFile
 import platform.Foundation.create
+import platform.Foundation.fileHandleForUpdatingURL
+import platform.Foundation.seekToFileOffset
 import platform.Foundation.timeIntervalSince1970
 
 /**
@@ -323,7 +337,48 @@ actual open class PlatformFile : IPlatformFile {
 
     actual override fun canExecute(): Boolean = NSFileManager.defaultManager.isExecutableFileAtPath(getAbsolutePath())
 
-    actual override fun openOutputStream(append: Boolean): Sink? = NSOutputStream(nsUrl, append).asSink().buffered()
+    @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class, UnsafeIoApi::class)
+    actual override fun openOutputStream(append: Boolean, truncate: Boolean): Sink? = memScoped {
+        enforceWriteMode(append, truncate)
+
+        if (!truncate && !append) {
+            val errorPointer: CPointer<ObjCObjectVar<NSError?>> =
+                alloc<ObjCObjectVar<NSError?>>().ptr
+            val handle = NSFileHandle.fileHandleForUpdatingURL(nsUrl, errorPointer)
+            handle?.seekToFileOffset(0UL)
+
+            return (object : RawSink {
+                override fun write(source: Buffer, byteCount: Long) {
+                    var remaining = byteCount
+                    var bytesWritten: Long
+                    while (remaining > 0) {
+                        val writeErrorPointer: CPointer<ObjCObjectVar<NSError?>> =
+                            alloc<ObjCObjectVar<NSError?>>().ptr
+                        UnsafeBufferOperations.readFromHead(source) { data, pos, limit ->
+                            val toCopy = minOf(remaining, (limit - pos).toLong())
+                            handle?.writeData(data.slice(pos until minOf((pos + toCopy).toInt(), limit)).toByteArray().toNSData(), writeErrorPointer)
+                            bytesWritten = toCopy
+                            0
+                        }
+
+                        if (writeErrorPointer.pointed.value != null) throw IOException(writeErrorPointer.pointed.value?.localizedDescription ?: "Unknown error")
+                        if (bytesWritten == 0L) throw IOException("NSFileHandle reached capacity")
+
+                        source.skip(bytesWritten)
+                        remaining -= bytesWritten
+                    }
+                }
+
+                override fun close() {
+                    handle?.closeFile()
+                }
+
+                override fun flush() {}
+            }).buffered()
+        }
+
+        return NSOutputStream(nsUrl, append).asSink().buffered()
+    }
 
     actual override fun openInputStream(): Source? = NSInputStream(nsUrl).asSource().buffered()
 
@@ -346,4 +401,8 @@ actual open class PlatformFile : IPlatformFile {
 
         PosixFilePermissions.posixFilePermissions(currentPermissions.toInt())
     }
+
+    @Suppress("UnnecessaryOptInAnnotation")
+    @OptIn(ExperimentalForeignApi::class, UnsafeNumber::class, BetaInteropApi::class)
+    private fun ByteArray.toNSData() = usePinned { NSData.create(it.addressOf(0), this.size.convert()) }
 }

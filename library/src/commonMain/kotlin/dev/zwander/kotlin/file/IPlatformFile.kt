@@ -299,9 +299,13 @@ interface IPlatformFile : Comparable<IPlatformFile> {
     /**
      * Obtain a write stream to this file.
      * @param append if true, writes to the stream will append to this file. Otherwise, any existing content will be overwritten.
+     * @param truncate if true, the file will be erased before writing. Cannot be true if [append] is true. The default behavior is to truncate
+     *                  when not appending, but this function can be explicitly called like [openOutputStream(append = false, truncate = false)]
+     *                  to only overwrite starting from the beginning of the file, leaving anything after the write finishes untouched.
+     *                  See [Android Docs](https://developer.android.com/reference/android/os/ParcelFileDescriptor#parseMode(java.lang.String)).
      * @return a [Sink] instance or null if a stream could not be opened.
      */
-    fun openOutputStream(append: Boolean = false): Sink?
+    fun openOutputStream(append: Boolean = false, truncate: Boolean = !append): Sink?
 
     /**
      * Obtain a read stream from this file.
@@ -332,6 +336,12 @@ interface IPlatformFile : Comparable<IPlatformFile> {
      * Identical to [getPath].
      */
     override fun toString(): String
+
+    fun enforceWriteMode(append: Boolean, truncate: Boolean) {
+        if (append && truncate) {
+            throw IllegalStateException("Cannot truncate when appending.")
+        }
+    }
 }
 
 internal fun IPlatformFile.stringify(): String = getPath()

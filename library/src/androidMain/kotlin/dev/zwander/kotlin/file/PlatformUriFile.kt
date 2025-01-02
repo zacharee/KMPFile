@@ -135,8 +135,20 @@ class PlatformUriFile(
         throw IllegalStateException("Not Supported")
     }
 
-    override fun openOutputStream(append: Boolean): Sink? {
-        return context.contentResolver.openOutputStream(wrappedFile.uri, "w${if (append) "a" else "t"}")?.asSink()?.buffered()
+    override fun openOutputStream(append: Boolean, truncate: Boolean): Sink? {
+        enforceWriteMode(append, truncate)
+
+        val mode = StringBuilder("w")
+
+        if (append) {
+            mode.append("a")
+        }
+
+        if (truncate) {
+            mode.append("t")
+        }
+
+        return context.contentResolver.openOutputStream(wrappedFile.uri, mode.toString())?.asSink()?.buffered()
     }
 
     override fun openInputStream(): Source? {

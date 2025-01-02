@@ -6,14 +6,23 @@ import dev.zwander.kotlin.file.attribute.PosixFilePermission
 import dev.zwander.kotlin.file.attribute.PosixFilePermissions
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.UnsafeNumber
+import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.pointed
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.toKString
+import kotlinx.cinterop.usePinned
+import kotlinx.io.Buffer
+import kotlinx.io.IOException
+import kotlinx.io.RawSink
 import kotlinx.io.Sink
 import kotlinx.io.Source
+import kotlinx.io.UnsafeIoApi
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.unsafe.UnsafeBufferOperations
 import platform.posix.R_OK
 import platform.posix.S_IRGRP
 import platform.posix.S_IROTH
@@ -25,11 +34,19 @@ import platform.posix.X_OK
 import platform.posix.access
 import platform.posix.chmod
 import platform.posix.creat
+import platform.posix.fclose
+import platform.posix.ferror
+import platform.posix.fflush
+import platform.posix.fopen
+import platform.posix.fwrite
 import platform.posix.lstat
 import platform.posix.mode_t
+import platform.posix.posix_errno
 import platform.posix.stat
+import platform.posix.strerror
 import platform.posix.time_t
 import platform.posix.timeval
+import platform.posix.uint8_tVar
 import platform.posix.utimes
 
 @Suppress("unused", "CAST_NEVER_SUCCEEDS")
@@ -310,7 +327,50 @@ actual open class PlatformFile : IPlatformFile {
         return access(wrappedPath.toString(), X_OK) == 0
     }
 
-    actual override fun openOutputStream(append: Boolean): Sink? {
+    @OptIn(UnsafeIoApi::class, UnsafeNumber::class)
+    actual override fun openOutputStream(append: Boolean, truncate: Boolean): Sink? = memScoped {
+        enforceWriteMode(append, truncate)
+
+        // https://github.com/Archinamon/native-file-io
+        if (!append && !truncate) {
+            val fd = fopen(getAbsolutePath(), "w")
+
+            return (object : RawSink {
+                override fun close() {
+                    fclose(fd).ensureUnixCallResult("fclose") { it == 0 }
+                }
+
+                override fun flush() {
+                    fflush(fd).ensureUnixCallResult("fflush") { it == 0 }
+                }
+
+                override fun write(source: Buffer, byteCount: Long) {
+                    var remaining = byteCount
+                    var bytesWritten = 0L
+                    while (remaining > 0) {
+                        UnsafeBufferOperations.readFromHead(source) { data, pos, limit ->
+                            val toCopy = minOf(remaining, (limit - pos).toLong()).toInt()
+                            bytesWritten = data.usePinned {
+                                val bytes = it.addressOf(pos).reinterpret<uint8_tVar>()
+                                fwrite(bytes, 1U, toCopy.toUInt(), fd)
+                            }.toLong()
+
+                            if (bytesWritten != toCopy.toLong()) {
+                                ferror(fd).ensureUnixCallResult("fwrite") { it == 0 }
+                            }
+                            0
+                        }
+
+                        if (bytesWritten == 0L) throw IOException("NSOutputStream reached capacity")
+
+                        source.skip(bytesWritten)
+                        remaining -= bytesWritten
+                    }
+                }
+
+            }).buffered()
+        }
+
         return SystemFileSystem.sink(wrappedPath, append).buffered()
     }
 
@@ -337,4 +397,28 @@ actual open class PlatformFile : IPlatformFile {
     actual override fun compareTo(other: IPlatformFile): Int = getName().compareTo(other.getName())
 
     actual override fun toString(): String = stringify()
+
+    /* =========== */
+    /* https://github.com/Archinamon/native-file-io/blob/master/src/posixMain/kotlin/posix.kt */
+
+    private inline fun Int.ensureUnixCallResult(op: String, predicate: (Int) -> Boolean): Int {
+        if (!predicate(this)) {
+            throw Error("$op: ${strerror(posix_errno())!!.toKString()}")
+        }
+        return this
+    }
+
+    private inline fun Long.ensureUnixCallResult(op: String, predicate: (Long) -> Boolean): Long {
+        if (!predicate(this)) {
+            throw Error("$op: ${strerror(posix_errno())!!.toKString()}")
+        }
+        return this
+    }
+
+    private inline fun ULong.ensureUnixCallResult(op: String, predicate: (ULong) -> Boolean): ULong {
+        if (!predicate(this)) {
+            throw Error("$op: ${strerror(posix_errno())!!.toKString()}")
+        }
+        return this
+    }
 }
