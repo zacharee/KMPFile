@@ -42,6 +42,7 @@ import platform.posix.fwrite
 import platform.posix.lstat
 import platform.posix.mode_t
 import platform.posix.posix_errno
+import platform.posix.size_t
 import platform.posix.stat
 import platform.posix.strerror
 import platform.posix.time_t
@@ -352,7 +353,7 @@ actual open class PlatformFile : IPlatformFile {
                             val toCopy = minOf(remaining, (limit - pos).toLong()).toInt()
                             bytesWritten = data.usePinned {
                                 val bytes = it.addressOf(pos).reinterpret<uint8_tVar>()
-                                fwrite(bytes, 1U, toCopy.toUInt(), fd)
+                                fwrite(bytes, 1U, toCopy as size_t, fd)
                             }.toLong()
 
                             if (bytesWritten != toCopy.toLong()) {
