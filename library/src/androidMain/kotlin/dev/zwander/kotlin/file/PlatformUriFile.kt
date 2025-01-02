@@ -136,7 +136,7 @@ class PlatformUriFile(
     }
 
     override fun openOutputStream(append: Boolean): Sink? {
-        return context.contentResolver.openOutputStream(wrappedFile.uri, "w${if (append) "a" else ""}")?.asSink()?.buffered()
+        return context.contentResolver.openOutputStream(wrappedFile.uri, "w${if (append) "a" else "t"}")?.asSink()?.buffered()
     }
 
     override fun openInputStream(): Source? {
