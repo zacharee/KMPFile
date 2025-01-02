@@ -1,9 +1,9 @@
 [versions]
-android-gradle = "8.5.2"
+android-gradle = "8.7.3"
 documentfile = "1.0.1"
-filekit = "0.8.7"
-kotlin = "2.0.21"
-kotlinxCoroutinesCore = "1.9.0"
+filekit = "0.8.8"
+kotlin = "2.1.0"
+kotlinxCoroutinesCore = "1.10.1"
 kotlinxIoCore = "0.5.4"
 mavenPublish = "0.29.0"
 okio = "3.9.1"
