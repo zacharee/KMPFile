@@ -1,11 +1,9 @@
 package dev.zwander.kotlin.file
 
 import android.content.Context
-import androidx.annotation.Keep
 import androidx.startup.Initializer
 
 @Suppress("unused")
-@Keep
 class ContextInitializer : Initializer<Context> {
     companion object {
         lateinit var appContext: Context

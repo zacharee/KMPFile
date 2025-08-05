@@ -1,13 +1,8 @@
 package dev.zwander.kotlin.file.filekit
 
 import dev.zwander.kotlin.file.IPlatformFile
-import io.github.vinceglb.filekit.core.PlatformDirectory
-import io.github.vinceglb.filekit.core.PlatformFile
+import io.github.vinceglb.filekit.PlatformFile
 
 actual fun PlatformFile.toKmpFile(): IPlatformFile {
-    return dev.zwander.kotlin.file.PlatformFile(file)
-}
-
-actual fun PlatformDirectory.toKmpFile(): IPlatformFile {
     return dev.zwander.kotlin.file.PlatformFile(file)
 }
